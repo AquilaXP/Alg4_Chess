@@ -162,7 +162,6 @@
   <ItemGroup>
     <ClInclude Include="ChessTable.h" />
     <ClInclude Include="FEN.h" />
-    <ClInclude Include="ParserFEN.h" />
     <ClInclude Include="Step.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

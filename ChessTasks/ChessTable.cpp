@@ -20,9 +20,9 @@ ChessTable::ChessTable()
     }
 }
 
-void ChessTable::set( const std::string& pos, char c )
+void ChessTable::set( std::string_view pos, char c )
 {
-    auto p = from_string( pos );
+    auto p = stringToPos( pos );
     m_table[p.second][p.first] = c;
 }
 
@@ -34,6 +34,12 @@ void ChessTable::set( size_t x, size_t y, char c )
 char ChessTable::get( size_t x, size_t y ) const
 {
     return m_table[y][x];
+}
+
+char ChessTable::get( std::string_view pos ) const
+{
+    auto p = stringToPos( pos );
+    return m_table[p.second][p.first];
 }
 
 std::array<uint64_t, 12> ChessTable::toBitBoard() const
@@ -125,7 +131,7 @@ std::istream& operator>>( std::istream& is, ChessTable& table )
     return is;
 }
 
-std::pair< size_t, size_t > ChessTable::from_string( const std::string& pos )
+std::pair< size_t, size_t > stringToPos( std::string_view pos )
 {
     return std::make_pair( pos[0] - 'a', 7 - ( '8' - pos[1] ) );
 }

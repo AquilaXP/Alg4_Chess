@@ -26,9 +26,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ParserFEN.h">
-      <Filter>Исходные файлы</Filter>
-    </ClInclude>
     <ClInclude Include="FEN.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>

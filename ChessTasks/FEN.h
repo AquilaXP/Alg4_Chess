@@ -24,5 +24,21 @@ std::istream& operator >> ( std::istream& is, FEN& fen );
 std::string FenToString( const FEN& fen );
 std::ostream& operator << ( std::ostream& os, const FEN& fen );
 
+bool isPawn( char c );
+bool isKnight( char c );
+bool isBishop( char c );
+bool isRook( char c );
+bool isQueen( char c );
+bool isKing( char c );
+bool isWhite( char c );
+bool isBlack( char c );
+char getColor( char c );
+
 FEN updateActiveAndFullMove( const FEN& fen, const Step& step );
 void updateActiveAndFullMove( FEN& fen, const Step& step );
+FEN updateHalfMove( const FEN& fen, const Step& step );
+void updateHalfMove( FEN& fen, const Step& step );
+FEN actionStep( const FEN& fen, const Step& step );
+void actionStep( FEN& fen, const Step& step );
+FEN enPassant( const FEN& fen, const Step& step );
+void enPassant( FEN& fen, const Step& step );

@@ -126,6 +126,55 @@ std::string FenToString( const FEN& fen )
     return os.str();
 }
 
+bool isPawn( char c )
+{
+    return c == 'p' || c == 'P';
+}
+
+bool isKnight( char c )
+{
+    return c == 'n' || c == 'N';
+}
+
+bool isBishop( char c )
+{
+    return c == 'b' || c == 'B';
+}
+
+bool isRook( char c )
+{
+    return c == 'r' || c == 'R';
+}
+
+bool isQueen( char c )
+{
+    return c == 'q' || c == 'Q';
+}
+
+bool isKing( char c )
+{
+    return c == 'k' || c == 'K';
+}
+
+bool isWhite( char c )
+{
+    return getColor( c ) == 'w';
+}
+
+bool isBlack( char c )
+{
+    return !isWhite( c );
+}
+
+char getColor( char c )
+{
+    if( c == 'P' || c == 'N' ||
+        c == 'B' || c == 'R' ||
+        c == 'Q' || c == 'K' )
+        return 'w';
+    return 'b';
+}
+
 std::ostream& operator<<( std::ostream& os, const FEN& fen )
 {
     for( size_t r = 0; r < 8; ++r )
@@ -182,5 +231,123 @@ void updateActiveAndFullMove( FEN& fen, const Step& step )
     else
     {
         fen.m_active_color = 'b';
+    }
+}
+
+FEN updateHalfMove( const FEN& fen, const Step& step )
+{
+    FEN newFen = fen;
+    updateHalfMove( newFen, step );
+    return newFen;
+}
+
+void updateHalfMove( FEN& fen, const Step& step )
+{
+    auto bp = stringToPos( std::string_view( &step.m_step[0], 2 ) );
+    auto ep = stringToPos( std::string_view( &step.m_step[2], 2 ) );
+    
+    char b_v = fen.m_chess_table.get( bp.first, bp.second );
+    char e_v = fen.m_chess_table.get( ep.first, ep.second );
+
+    if( e_v != '.' || b_v == 'P' || b_v == 'p' )
+    {
+        fen.m_half_move = 0;
+    }
+    else
+    {
+        fen.m_half_move += 1;
+    }
+}
+
+FEN actionStep( const FEN& fen, const Step& step )
+{
+    FEN newFen;
+    actionStep( newFen, step );
+    return newFen;
+}
+
+void actionStep( FEN& fen, const Step& step )
+{
+    updateHalfMove( fen, step );
+    updateActiveAndFullMove( fen, step );
+
+    std::string_view bp( &step.m_step[0], 2 );
+    std::string_view ep( &step.m_step[2], 2 );
+
+    char b_v = fen.m_chess_table.get( bp );
+    fen.m_chess_table.set( bp, '.' );
+
+    if( step.m_step.size() == 5 )
+        b_v = step.m_step[4];
+
+    fen.m_chess_table.set( ep, b_v );
+}
+
+FEN enPassant( const FEN& fen, const Step& step )
+{
+    FEN newFen = fen;
+    enPassant( newFen, step );
+
+    return newFen;
+}
+
+void enPassant( FEN& fen, const Step& step )
+{
+    std::string_view bp( &step.m_step[0], 2 );
+    std::string_view ep( &step.m_step[2], 2 );
+    char bpc = fen.m_chess_table.get( bp );
+    if( isPawn( bpc ) )
+    {
+        if( ep == fen.m_en_passant )
+        {
+            fen.m_en_passant = "-";
+            std::string delp;
+            if( ep[1] == '3' )
+            {
+                delp += ep[0];
+                delp += '4';
+            }
+            else
+            {
+                delp += ep[0];
+                delp += '5';
+            }
+            fen.m_chess_table.set( delp );
+        }
+        else
+        {
+            char dc = bp[1] - ep[1];
+            if( std::abs( dc ) == 2 )
+            {
+                std::string epass;
+                epass.resize( 2 );
+                epass[0]= ep[0];
+                epass[1]= ep[1] + dc/2;
+
+                if( ep[0] != 'a' )
+                {
+                    std::string left( ep.begin(), ep.end() );
+                    --left[0];
+                    char leftC = fen.m_chess_table.get( left );
+                    if( isPawn( leftC ) && (getColor( leftC ) != getColor( bpc )) )
+                    {
+                        fen.m_en_passant = epass;
+                        return;
+                    }
+                }
+                if( ep[0] != 'h' )
+                {
+                    std::string right( ep.begin(), ep.end() );
+                    ++right[0];
+                    char rightC = fen.m_chess_table.get( right );
+                    if( isPawn( rightC ) && (getColor( rightC ) != getColor( bpc )) )
+                    {
+                        fen.m_en_passant = epass;
+                        return;
+                    }
+                }
+            }
+            fen.m_en_passant = "-";
+        }
     }
 }
