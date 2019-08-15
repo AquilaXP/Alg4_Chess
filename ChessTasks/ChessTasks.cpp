@@ -155,10 +155,10 @@ int main()
 {
     try
     {
-        Test1_FEN( R"(2019-08-12_Chess-Tasks\1743.1.FEN - ASCII)" );
-        Test2_FEN_BITS( R"(2019-08-12_Chess-Tasks\1744.1.FEN - BITS _)" );
-        Test3_FEN_SAVELOAD( R"(2019-08-12_Chess-Tasks\1745.1.Сборка и разборка)" );
-        Test4_COUNTER_FULLSTEP( R"(2019-08-12_Chess-Tasks\1746.1.Счётчик ходов)" );
+        Test1_FEN( R"(Chess-Tasks\1743.1.FEN - ASCII)" );
+        Test2_FEN_BITS( R"(Chess-Tasks\1744.1.FEN - BITS _)" );
+        Test3_FEN_SAVELOAD( R"(Chess-Tasks\1745.1.Сборка и разборка)" );
+        Test4_COUNTER_FULLSTEP( R"(Chess-Tasks\1746.1.Счётчик ходов)" );
     }
     catch( const std::exception& err )
     {
